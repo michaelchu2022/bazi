@@ -1,0 +1,75 @@
+<!doctype html>
+<head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Hello from Flask</title>
+</head>
+
+<body class="container-fluid">
+    <h1 class="row m-3">八字計算器</h1>
+    <form action="/" method="post">
+      <div class="row m-3">
+        <label for="datename" class="col-sm-2 col-form-label">請輸入生日日期:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-select" id="datepicker" name="birthday" value={{ birthday | default("1970-01-01", true) }} >
+        </div>
+      </div>
+      <div class="row m-3">
+        <label for="hname" class="col-sm-2 col-form-label" min="0" max="23">出生小時:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-select" id="timepicker" name="hour" value={{ hour | default("0", true) }} required>
+        </div>
+      </div>
+      <div class="row m-3">
+        <label for="gender" class="col-sm-2 col-form-label">性別:</label>
+        <div class="col-sm-10">
+          <select type="text" class="form-select" id="sex" name="sex">
+            <option {% if (sex == "1") %} selected {% endif %} value="1">男</option>
+            <option {% if (sex == "0") %} selected {% endif %} value="0">女</option>
+          </select>
+        </div>
+      </div>
+      <div class="row m-3">
+        <button type="submit" class="btn btn-primary">提交</button>
+      </div>
+      
+      <!-- <input type="submit" value="提交"><br><br> -->
+    </form> 
+    <div id="result" class="m-3">
+        {{ result }}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+</body>
+
+<script>
+  $( function() {
+    $( "#datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      dateFormat: "yy-mm-dd",
+      minDate: "1900-01-01",
+      maxDate: "2099-12-31"
+    });
+    $('#timepicker').timepicker({
+        timeFormat: 'H',
+        interval: 1,
+        minTime: '0:00',
+        maxTime: '23:59',
+        startTime: '0:00',
+        dynamic: true,
+        dropdown: true,
+        scrollbar: true
+    });
+    
+  } );
+</script>

@@ -1,6 +1,6 @@
 class BaziModel:
-    def __init__(self, gans, zhis, wuxiScore, tenDeities, strong, sameValue, diffValue, \
-        hiddenGan, ganShens, zhiShens, shenSha, heiShens, keiShens, geguk, gan5hap, zhi6hap, luckyColor, luckyNumber, luckyDirection):
+    def __init__(self, gans, zhis, countZhi1, countZhi2, wuxiScore, tenDeities, strong, sameValue, diffValue, \
+        hiddenGan, ganShens, zhiShens, shenSha, heiShens, keiShens, geguk, geguk2, gan5hap, zhi6hap, luckyColor, luckyNumber, luckyDirection):
         self.gans = gans
         self.zhis = zhis
         self.baziList = [item[0]+item[1] for item in zip(gans, zhis)]
@@ -8,6 +8,8 @@ class BaziModel:
         self.yueling=zhis.month
         self.tingan=" ".join(gans)
         self.deizhi=" ".join(zhis)
+        self.countZhi1 = countZhi1
+        self.countZhi2 = countZhi2
         self.wuxiScore = wuxiScore
         self.tenDeities = tenDeities
         self.strong = strong
@@ -20,6 +22,7 @@ class BaziModel:
         self.heiShens = heiShens
         self.keiShens = keiShens
         self.geguk = geguk
+        self.geguk2 = geguk2
         self.gan5hap = gan5hap
         self.zhi6hap = zhi6hap
         self.luckyColor = luckyColor
@@ -33,6 +36,8 @@ class BaziModel:
         resultArray.append("月令：" + self.yueling)
         resultArray.append("天干：" + self.tingan)
         resultArray.append("地支：" + self.deizhi)
+        resultArray.append("地支數1：" + str(self.countZhi1))
+        resultArray.append("地支數2：" + str(self.countZhi2))
         resultArray.append("五行分數：" + str(self.wuxiScore))
         resultArray.append("身強弱：" + str(self.strong) + " (通常>29为强，需要参考月份、坐支等)")
         resultArray.append("同類值：" + str(self.sameValue))
@@ -44,6 +49,7 @@ class BaziModel:
         resultArray.append("喜神：" + " ".join(self.heiShens))
         resultArray.append("忌神：" + " ".join(self.keiShens))
         resultArray.append("格局：" + str(self.geguk))
+        resultArray.append("格局2：" + str(self.geguk2))
         resultArray.append("天干五合：" + str(self.gan5hap))
         resultArray.append("地支六合：" + str(self.zhi6hap))
         resultArray.append("十神：" + str(self.tenDeities))

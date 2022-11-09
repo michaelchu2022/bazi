@@ -16,7 +16,6 @@ from common import *
 from helper import *
 from baziModel import BaziModel
 
-
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
@@ -36,9 +35,9 @@ def processData():
     sex = request.form['sex']
     print(birthday, year, month, day, hour, sex)
 
-    result = getResult(year, month, day, hour, int(sex))
+    result, nft_file = getResult(year, month, day, hour, int(sex))
 
-    return render_template('index.html', result=Markup(result.__str__()), birthday=birthday, hour=hour, sex=sex)
+    return render_template('index.html', result=Markup(result.__str__()), nft_file=nft_file, birthday=birthday, hour=hour, sex=sex)
 
 
 @app.post('/api/bazi')
@@ -86,6 +85,8 @@ def getResult(year, month, day, hour, sex):
     zhis = Zhis(year=Zhi[yTG.dz], month=Zhi[mTG.dz], 
                 day=Zhi[dTG.dz], time=Zhi[gz.dz])
 
+    (countZhi1, countZhi2) = getCountZhi(zhis)
+
     (wuxiScore, tenDeities, strong, sameValue, diffValue) = getWuxiScore(gans, zhis)
 
     print(" ".join(gans))
@@ -104,6 +105,9 @@ def getResult(year, month, day, hour, sex):
     # 格局
     geguk = getGeguk(gans, zhis)
 
+    geguk2 = getGeguk2(gans, zhis)
+    print("格局2： ", geguk2)
+
     # 天干五合
     gan5hap = tinGan5hap(gans)
 
@@ -113,9 +117,13 @@ def getResult(year, month, day, hour, sex):
     (heiShens, keiShens) = getHeiShenKeiShen(gans, zhis)
 
     (luckyColor, luckyNumber, luckyDirection) = getLuckyAttributes(gans, zhis)
+
+    nft_file = getNFT(gans, zhis)
+    nft_file = nft_file.removeprefix('static/')
+    print("nft_file: ",nft_file)
     
-    baziModel = BaziModel(gans, zhis, wuxiScore, tenDeities, strong, sameValue, diffValue, 
+    baziModel = BaziModel(gans, zhis, countZhi1, countZhi2, wuxiScore, tenDeities, strong, sameValue, diffValue, 
         hiddenGan, ganShens, zhiShens, shenSha, heiShens, keiShens, 
-        geguk, gan5hap, zhi6hap, luckyColor, luckyNumber, luckyDirection)
+        geguk, geguk2, gan5hap, zhi6hap, luckyColor, luckyNumber, luckyDirection)
     # print(baziModel)
-    return baziModel
+    return baziModel, nft_file

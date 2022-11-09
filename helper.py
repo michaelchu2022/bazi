@@ -1,5 +1,6 @@
 from common import *
 import sxtwl
+from nftTest import *
 
 def gan_zhi_he(zhu):    #干支
     gan, zhi = zhu
@@ -420,6 +421,29 @@ def getGeguk(gans, zhis):
     print("格局:", ge, '\t', end='\n')
     return tempStr
 
+def getGeguk2(gans, zhis):
+    me = gans.day
+    yueling = zhis[1]
+    hiddenGans = zhi5[yueling]
+    print('月令藏干：', hiddenGans)
+
+    for hiddenGan in hiddenGans:
+        # nextGan = ''
+        firstGan = ''
+        secondGan = ''
+        for wuhang in wuhangs.values():        
+            if hiddenGan[0] in wuhang:
+                firstGan, secondGan = wuhang[0:2]
+                print('two gans:', firstGan, secondGan)
+                # index = wuhang.index(hiddenGan[0])
+                # nextGan = wuhang[1-index]
+                # print('nextGan :', nextGan)
+        # if (hiddenGan[0] in gans) or (nextGan in gans):
+        if (firstGan in gans) or (secondGan in gans):
+            return ten_deities[me][hiddenGan[0]]
+        # elif nextGan in gans:
+        #     return ten_deities[me][nextGan]
+    return ten_deities[me][list(hiddenGans)[0][0]]
 
 # 甲己合化土　乙庚合化金　丙辛合化水　丁壬合化木　戊癸合化火
 # 天干相沖：(+6 相沖)
@@ -515,6 +539,39 @@ def getLuckyAttributes(gans, zhis):
     print("幸運方位：", luckyDirection)
     return (luckyColor, luckyNumber, luckyDirection)
 
+def getCountZhi(zhis):
+    group1 = {"子":0,"午":0,"卯":0,"酉":0}
+    group2 = {"辰":0,"戌":0,"丑":0,"未":0}
+    for zhi in zhis:
+        if zhi in group1.keys():
+            group1[zhi] += 1
+        if zhi in group2.keys():
+            group2[zhi] += 1
+    return (group1, group2)
+
+def calculate_attribute_map(gans, zhis):
+    attribute_map = [0,0,0,0,0,0,0,0]
+    idx = 0
+    for gan in gans:
+        # print(Gan.index(gan))
+        attribute_map[idx] = Gan.index(gan) % 5
+        idx += 1
+
+    for zhi in zhis:
+        # print(Zhi.index(zhi))
+        attribute_map[idx] = Zhi.index(zhi) % 5
+        idx += 1
+
+    return attribute_map
+
+def getNFT(gans, zhis):
+    parse_config()
+    # rt = generate_images("test", 1)
+    # attribute_map = [3,1,2,1,2,1,1,1]
+    attribute_map = calculate_attribute_map(gans, zhis)
+    image_file_name = generate_images("test", 1, attribute_map)
+    return image_file_name
+
 def testSxtwl():
     day = sxtwl.fromSolar(2022, 4, 5)
     s = "公历:%d年%d月%d日" % (day.getSolarYear(), day.getSolarMonth(), day.getSolarDay())
@@ -544,3 +601,4 @@ def testSxtwl():
         print("节气时间:%d-%d-%d %d:%d:%d"%(t.Y, t.M, t.D, t.h, t.m, round(t.s)))
     else:
         print("当天不是节气日")
+

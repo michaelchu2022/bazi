@@ -3,12 +3,14 @@
 
 # Import required libraries
 from PIL import Image
-import pandas as pd
-import numpy as np
-import time
+# import pandas as pd
+# import numpy as np
+# import time
 import os
-import random
+# import random
 from progressbar import progressbar
+import base64
+import io
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -75,19 +77,24 @@ def generate_single_image(filepaths, output_filename=None):
         if filepath.endswith('.png'):
             img = Image.open(os.path.join(assets_path, filepath))
             bg.paste(img, (0,0), img)
-            # bg.alpha_composite(img)
             
     
     # Save the final image into desired location
-    if output_filename is not None:
-        bg.save(output_filename)
-    else:
-        # If output filename is not specified, use timestamp to name the image and save it in output/single_images
-        if not os.path.exists(os.path.join('output', 'single_images')):
-            os.makedirs(os.path.join('output', 'single_images'))
-        bg.save(os.path.join('output', 'single_images', str(int(time.time())) + '.png'))
+    # if output_filename is not None:
+    #     bg.save(output_filename)
+    # else:
+    #     # If output filename is not specified, use timestamp to name the image and save it in output/single_images
+    #     if not os.path.exists(os.path.join('output', 'single_images')):
+    #         os.makedirs(os.path.join('output', 'single_images'))
+    #     bg.save(os.path.join('output', 'single_images', str(int(time.time())) + '.png'))
 
-    return output_filename
+    # return output_filename
+
+    data = io.BytesIO()
+    bg.save(data,"png")
+    encoded_img_data = base64.b64encode(data.getvalue())
+
+    return encoded_img_data
 
 
 # Generate a single image with all possible traits
@@ -194,28 +201,28 @@ def generate_images(edition, count, attribute_map, drop_dup=True):
                 rarity_table[CONFIG[idx]['name']].append('none')
     
     # Create the final rarity table by removing duplicate creat
-    rarity_table = pd.DataFrame(rarity_table).drop_duplicates()
-    print("Generated %i images, %i are distinct" % (count, rarity_table.shape[0]))
+    # rarity_table = pd.DataFrame(rarity_table).drop_duplicates()
+    # print("Generated %i images, %i are distinct" % (count, rarity_table.shape[0]))
     
-    if drop_dup:
-        # Get list of duplicate images
-        img_tb_removed = sorted(list(set(range(count)) - set(rarity_table.index)))
+    # if drop_dup:
+    #     # Get list of duplicate images
+    #     img_tb_removed = sorted(list(set(range(count)) - set(rarity_table.index)))
 
-        # Remove duplicate images
-        print("Removing %i images..." % (len(img_tb_removed)))
+    #     # Remove duplicate images
+    #     print("Removing %i images..." % (len(img_tb_removed)))
 
-        #op_path = os.path.join('output', 'edition ' + str(edition))
-        for i in img_tb_removed:
-            os.remove(os.path.join(op_path, str(i).zfill(zfill_count) + '.png'))
+    #     #op_path = os.path.join('output', 'edition ' + str(edition))
+    #     for i in img_tb_removed:
+    #         os.remove(os.path.join(op_path, str(i).zfill(zfill_count) + '.png'))
 
-        # Rename images such that it is sequentialluy numbered
-        for idx, img in enumerate(sorted(os.listdir(op_path))):
-            os.rename(os.path.join(op_path, img), os.path.join(op_path, str(idx).zfill(zfill_count) + '.png'))
+    #     # Rename images such that it is sequentialluy numbered
+    #     for idx, img in enumerate(sorted(os.listdir(op_path))):
+    #         os.rename(os.path.join(op_path, img), os.path.join(op_path, str(idx).zfill(zfill_count) + '.png'))
     
     
     # Modify rarity table to reflect removals
-    rarity_table = rarity_table.reset_index()
-    rarity_table = rarity_table.drop('index', axis=1)
+    # rarity_table = rarity_table.reset_index()
+    # rarity_table = rarity_table.drop('index', axis=1)
     # return rarity_table
     return image_file_name
 

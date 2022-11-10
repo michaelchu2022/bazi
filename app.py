@@ -35,9 +35,10 @@ def processData():
     sex = request.form['sex']
     print(birthday, year, month, day, hour, sex)
 
-    result, nft_file = getResult(year, month, day, hour, int(sex))
+    # result, nft_file = getResult(year, month, day, hour, int(sex))
+    result, nft_image = getResult(year, month, day, hour, int(sex))
 
-    return render_template('index.html', result=Markup(result.__str__()), nft_file=nft_file, birthday=birthday, hour=hour, sex=sex)
+    return render_template('index.html', result=Markup(result.__str__()), nft_file=nft_image.decode('utf-8'), birthday=birthday, hour=hour, sex=sex)
 
 
 @app.post('/api/bazi')
@@ -119,8 +120,9 @@ def getResult(year, month, day, hour, sex):
     (luckyColor, luckyNumber, luckyDirection) = getLuckyAttributes(gans, zhis)
 
     nft_file = getNFT(gans, zhis)
-    nft_file = nft_file.removeprefix('static/')
-    print("nft_file: ",nft_file)
+    # nft_file = nft_file.removeprefix('static/')
+    # nft_file = nft_file.removeprefix('tmp/')
+    # print("nft_file: ",nft_file)
     
     baziModel = BaziModel(gans, zhis, countZhi1, countZhi2, wuxiScore, tenDeities, strong, sameValue, diffValue, 
         hiddenGan, ganShens, zhiShens, shenSha, heiShens, keiShens, 
